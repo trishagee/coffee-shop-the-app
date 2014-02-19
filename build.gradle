@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+sourceCompatibility = 1.6
+version = '1.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-auth', version: '0.6.2'
+
+    compile group: 'org.mongojack', name: 'mongojack', version: '2.0.0-RC5'
+
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile 'org.codehaus.groovy:groovy-all:2.2.1'
+    testCompile group: 'com.yammer.dropwizard', name: 'dropwizard-testing', version: '0.6.2'
+    testCompile group: 'com.yammer.dropwizard', name: 'dropwizard-client', version: '0.6.2'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': 'Coffeeeee',
+                   'Implementation-Version': 0.1,
+                   'Main-Class': 'com.mechanitis.demo.DemoService')
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}

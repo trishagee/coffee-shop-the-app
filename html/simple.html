@@ -1,0 +1,23 @@
+<html ng-app="demoApp">
+<head>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+
+<div class="container">
+    Name: <input type="text" ng-model="name"/>
+
+    <div ng-controller="SimpleController">
+        <ul>
+            <li ng-repeat="customer in customers | filter:name">
+                {{customer.name}} - {{customer.city}}
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+<script src="js/angular.min.js"></script>
+<script src="js/demoApp.js"></script>
+</body>
+</html>
