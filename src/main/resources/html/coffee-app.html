@@ -12,7 +12,10 @@
     <div ng-controller="CoffeeShopController">
 
         <button type="submit" ng-click="getNearest()">get</button>
-        <p><b>{{nearestCoffeeShop}}</b></p>
+        <div ng-show="nearestCoffeeShop">
+            <b>{{nearestCoffeeShop.name}}</b>
+            <a ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
+        </div>
 
     </div>
 </div>

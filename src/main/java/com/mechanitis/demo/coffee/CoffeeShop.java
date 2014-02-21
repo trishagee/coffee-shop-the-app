@@ -18,7 +18,7 @@ public class CoffeeShop {
         return name;
     }
 
-//    public Map<String, Object> getAllValues() {
-//        return allValues.toMap();
-//    }
+    public Map<String, Object> getAllValues() {
+        return allValues.toMap();
+    }
 }
