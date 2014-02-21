@@ -1,0 +1,8 @@
+http:
+  rootPath: /service/*
+
+logging:
+  level: DEBUG
+
+assets:
+  path: /Users/trishagee/Documents/projects/mechanitis/demo/src/main/resources/html/
