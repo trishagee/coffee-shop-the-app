@@ -17,8 +17,21 @@
             <a ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
         </div>
 
+    <!--</div>-->
+    <!--<div ng-controller="GeoLocation">-->
+        <div ng-hide="supportsGeo">
+            Your browser doesn't let us get your location, sorry.
+        </div>
+        <div ng-show="supportsGeo">
+            <button ng-click="getGeoLocation()">
+                Get My Location
+            </button>
+            <pre ng-bind="position|json"/>
+        </div>
     </div>
+
 </div>
+
 
 
 
