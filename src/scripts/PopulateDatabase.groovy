@@ -5,7 +5,7 @@ def mongoClient = new MongoClient();
 def collection = mongoClient.getDB("TrishaCoffee").getCollection("coffeeshop")
 collection.drop()
 
-def xmlSlurper = new XmlSlurper().parse(new File('resources/coffee.xml'))
+def xmlSlurper = new XmlSlurper().parse(new File('resources/all-coffee-shops.xml'))
 
 xmlSlurper.node.each { child ->
     Map coffeeShop = ['openStreetMapId': child.@id.text(),
@@ -19,6 +19,8 @@ xmlSlurper.node.each { child ->
         collection.insert(new BasicDBObject(coffeeShop))
     }
 }
+
+println "\nTotal imported: $collection.count"
 
 collection.createIndex(new BasicDBObject('location', '2dsphere'))
 

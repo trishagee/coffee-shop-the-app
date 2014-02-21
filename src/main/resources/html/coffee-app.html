@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="coffeeApp">
+<head>
+    <title>Trish's Coffee</title>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-resource.min.js"></script>
+    <script src="js/coffee.js"></script>
+</head>
+<body>
+<div class="container">
+    Coffee Shop:
+    <div ng-controller="CoffeeShopController">
+
+        <button type="submit" ng-click="getNearest()">get</button>
+        <p><b>{{nearestCoffeeShop}}</b></p>
+
+    </div>
+</div>
+
+
+
+<div style="color: grey">Your Coffee Shop Selected Here</div>
+<div style="color: grey">Select your coffee here</div>
+<div style="color: grey">Free enter extras here</div>
+<div style="color: grey">Enter name here</div>
+
+</body>
+</html>

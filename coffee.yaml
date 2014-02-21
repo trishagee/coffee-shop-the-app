@@ -1,0 +1,5 @@
+http:
+  rootPath: /service/*
+
+logging:
+  level: DEBUG

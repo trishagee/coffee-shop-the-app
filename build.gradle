@@ -25,7 +25,7 @@ jar {
     manifest {
         attributes('Implementation-Title': 'Coffeeeee',
                    'Implementation-Version': 0.1,
-                   'Main-Class': 'com.mechanitis.demo.DemoService')
+                   'Main-Class': 'com.mechanitis.demo.coffee.CoffeeShopService')
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'

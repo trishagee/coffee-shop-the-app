@@ -2,6 +2,8 @@ package com.mechanitis.demo.coffee;
 
 import com.mongodb.DBObject;
 
+import java.util.Map;
+
 public class CoffeeShop {
     private final String name;
 
@@ -16,7 +18,7 @@ public class CoffeeShop {
         return name;
     }
 
-    public DBObject getAllValues() {
-        return allValues;
-    }
+//    public Map<String, Object> getAllValues() {
+//        return allValues.toMap();
+//    }
 }

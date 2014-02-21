@@ -4,7 +4,18 @@ import com.mongodb.MongoClient
 import spock.lang.Specification
 
 class CoffeeShopResourceSpecification extends Specification {
-    def 'should get stuff from the database'() {
+    def 'should return a dummy shop for testing'() {
+        given:
+        def coffeeShop = new CoffeeShopResource(null)
+
+        when:
+        def nearestShop = coffeeShop.getDummy()
+
+        then:
+        nearestShop.name == 'A dummy coffee shop'
+    }
+
+    def 'should return Cafe Nero as the closest coffee shop to Westminster Abbey'() {
         given:
         def mongoClient = new MongoClient()
         def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
@@ -16,6 +27,21 @@ class CoffeeShopResourceSpecification extends Specification {
 
         then:
         nearestShop.name == 'Caffè Nero'
+        println nearestShop.allValues
+    }
+
+    def 'should return something as the closest coffee shop to Earls Court Road'() {
+        given:
+        def mongoClient = new MongoClient()
+        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
+
+        when:
+        double latitude = 51.4950233
+        double longitude = -0.1962431
+        def nearestShop = coffeeShop.getNearest(latitude, longitude)
+
+        then:
+        nearestShop.name == 'Costa'
         println nearestShop.allValues
     }
 
