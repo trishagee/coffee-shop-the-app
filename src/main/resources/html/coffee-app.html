@@ -8,33 +8,26 @@
 </head>
 <body>
 <div class="container">
-    Coffee Shop:
-    <div ng-controller="CoffeeShopController">
+    <div ng-controller="CoffeeShopController" class="SelectedCoffeeShop">
 
-        <button type="submit" ng-click="getNearest()">get</button>
-        <div ng-show="nearestCoffeeShop">
-            <b>{{nearestCoffeeShop.name}}</b>
-            <a ng-show="nearestCoffeeShop.allValues.location"
-               ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
-        </div>
-
-        <!--</div>-->
-        <!--<div ng-controller="GeoLocation">-->
         <div ng-hide="supportsGeo">
             Your browser doesn't let us get your location, sorry.
         </div>
         <div ng-show="supportsGeo">
             <button ng-click="getGeoLocation()">
-                Get My Location
+                Show my coffee shop
             </button>
-            <pre ng-bind="position|json"/>
+        </div>
+        <div ng-show="nearestCoffeeShop">
+            <b>{{nearestCoffeeShop.name}}</b>
+            <a ng-show="nearestCoffeeShop.allValues.location"
+               ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.name}}+near+{{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
         </div>
     </div>
 
 </div>
 
 
-<div style="color: grey">Your Coffee Shop Selected Here</div>
 <div style="color: grey">Select your coffee here</div>
 <div style="color: grey">Free enter extras here</div>
 <div style="color: grey">Enter name here</div>
