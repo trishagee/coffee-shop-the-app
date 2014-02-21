@@ -16,22 +16,23 @@ coffeeApp.factory('CoffeeShopLocator', function ($resource) {
 });
 
 coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeShopLocator) {
-//    $scope.nearestCoffeeShop = CoffeeShopLocator.get({latitude: 51.4994678, longitude: -0.128888});
+//    $scope.defaultCoffeeShop = CoffeeShopLocator.get({latitude: 51.4994678, longitude: -0.128888});
 //    $scope.nearestCoffeeShop = CoffeeShopLocator.get();
-    $scope.getNearest = function () {
-        $scope.nearestCoffeeShop = CoffeeShopLocator.get({latitude: 51.4994678, longitude: -0.128888});
+    $scope.getNearest = function (latitude, longitude) {
+        $scope.nearestCoffeeShop = CoffeeShopLocator.get({latitude: latitude, longitude: longitude});
+        if ($scope.nearestCoffeeShop.name == null) {
+            //default coffee shop
+            $scope.nearestCoffeeShop = CoffeeShopLocator.get({latitude: 51.4994678, longitude: -0.128888});
+        }
     };
 //    $scope.nearestCoffeeShop = 'My Shop';
 //});
 //
 //coffeeApp.controller('GeoLocation', function ($scope, $window) {
     $scope.supportsGeo = $window.navigator;
-//    $scope.position = null;
     $scope.getGeoLocation = function () {
         window.navigator.geolocation.getCurrentPosition(function (position) {
-            $scope.$apply(function () {
-                $scope.position = position;
-            });
+            $scope.getNearest(position.coords.latitude, position.coords.longitude)
         }, function (error) {
             alert(error);
         });

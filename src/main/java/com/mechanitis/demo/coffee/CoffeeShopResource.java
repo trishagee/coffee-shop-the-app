@@ -10,7 +10,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import static java.util.Arrays.asList;
@@ -38,6 +37,9 @@ public class CoffeeShopResource {
                                                                                                                asList(longitude,
                                                                                                                       latitude)))
                                                                                      .append("$maxDistance", 2000))));
+        if (coffeeShop == null) {
+            return null;
+        }
         return new CoffeeShop((String) coffeeShop.get("name"), coffeeShop);
     }
 

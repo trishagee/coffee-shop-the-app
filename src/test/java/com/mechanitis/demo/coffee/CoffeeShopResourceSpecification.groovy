@@ -30,7 +30,7 @@ class CoffeeShopResourceSpecification extends Specification {
         println nearestShop.allValues
     }
 
-    def 'should return something as the closest coffee shop to Earls Court Road'() {
+    def 'should return Costa as the closest coffee shop to Earls Court Road'() {
         given:
         def mongoClient = new MongoClient()
         def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
@@ -44,5 +44,19 @@ class CoffeeShopResourceSpecification extends Specification {
         nearestShop.name == 'Costa'
         println nearestShop.allValues
     }
+
+    def 'should return null if no coffee shop found'() {
+        def mongoClient = new MongoClient()
+        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
+
+        when:
+        double latitude = 37.3981841
+        double longitude = -5.9776375999999996
+        def nearestShop = coffeeShop.getNearest(latitude, longitude)
+
+        then:
+        nearestShop == null
+    }
+
 
 }
