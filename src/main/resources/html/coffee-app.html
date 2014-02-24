@@ -31,21 +31,15 @@
         <form novalidate class="CoffeeForm">
             Drink: <select ng-model="drink.type" ng-options="type.name for type in types"> </select><br/>
             Size: <select ng-model="drink.size" ng-options="size for size in sizes"> </select><br/>
-            Extras (for example milk, syrups): <br/>
-            <!--<input type="text" ng-model="drink.extra" typeahead="extra for extra in extras" class="form-control">-->
 
-            <ul class="unstyled">
-                <li ng-repeat="selectedExtra in selectedExtras">
-                    {{selectedExtra.text}}
-                </li>
-            </ul>
-            <!--<form ng-submit="addExtra()">-->
-                <input type="text" ng-model="drink.extra" typeahead="extra for extra in extras" class="form-control"
-                       placeholder="type milk or syrups or extras here">
-                <button ng-click="addExtra()">add</button>
+            <div ng-show="drink.type && drink.size">
+                Extras (for example milk, syrups): <br/>
+                <span ng-repeat="selectedOption in drink.selectedOptions"> {{selectedOption}}; </span>
 
-
-
+                <input type="text" ng-model="newOption" typeahead="availableOption for availableOption in availableOptions"
+                       class="form-control" placeholder="type milk or syrups or extras here">
+                <button ng-click="addOption()">add</button>
+            </div>
         </form>
         <pre>form = {{drink | json}}</pre>
     </div>

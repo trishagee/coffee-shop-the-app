@@ -33,12 +33,15 @@ coffeeApp.controller('DrinksController', function ($scope) {
         {name: 'Tea', family: 'That Other Drink'}
     ]
     $scope.sizes = ['Small', 'Medium', 'Large']
-    $scope.extras = ['Soy', 'Skimmed', 'Caramel', 'Decaf', 'Whipped Cream', 'vanilla', 'hazelnut', 'sugar free', 'non fat', 'half fat',
+    $scope.availableOptions = ['Soy', 'Skimmed', 'Caramel', 'Decaf', 'Whipped Cream', 'vanilla', 'hazelnut', 'sugar free', 'non fat', 'half fat',
         'half and half', 'half caf', 'chocolate powder', 'double shot', 'wet', 'dry', 'organic', 'extra hot']
-    $scope.selectedExtras = [];
-    $scope.addExtra = function() {
-        $scope.selectedExtras.push({text:$scope.drink.extra});
-        $scope.drink.extra = '';
+
+    $scope.addOption = function() {
+        if (!$scope.drink.selectedOptions) {
+            $scope.drink.selectedOptions = [];
+        }
+        $scope.drink.selectedOptions.push($scope.newOption);
+        $scope.newOption = '';
     };
 
 });
