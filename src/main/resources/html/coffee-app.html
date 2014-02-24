@@ -28,10 +28,14 @@
 <div class="container">
 
     <div ng-controller="DrinksController">
-        Drink: <select ng-model="drink" ng-options="type.name for type in types">
+        <form novalidate class="CoffeeForm">
+            Drink: <select ng-model="drink.type" ng-options="type.name for type in types">
         </select><br/>
-        Size: <select ng-model="drinkSize" ng-options="size for size in sizes">
+            Size: <select ng-model="drink.size" ng-options="size for size in sizes">
         </select><br/>
+
+        </form>
+        <!--<pre>form = {{drink | json}}</pre>-->
     </div>
 
 </div>
