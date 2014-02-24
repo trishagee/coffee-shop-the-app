@@ -29,13 +29,13 @@
 
     <div ng-controller="DrinksController">
         <form novalidate class="CoffeeForm">
-            Drink: <select ng-model="drink.type" ng-options="type.name for type in types">
-        </select><br/>
-            Size: <select ng-model="drink.size" ng-options="size for size in sizes">
-        </select><br/>
+            Drink: <select ng-model="drink.type" ng-options="type.name for type in types"> </select><br/>
+            Size: <select ng-model="drink.size" ng-options="size for size in sizes"> </select><br/>
+            Extras (for example milk, syrups): <br/>
+            <input type="text" ng-model="drink.extra" typeahead="extra for extra in extras" class="form-control">
 
         </form>
-        <!--<pre>form = {{drink | json}}</pre>-->
+        <pre>form = {{drink | json}}</pre>
     </div>
 
 </div>
@@ -47,7 +47,8 @@
 <script src="js/angular.min.js"></script>
 <script src="js/angular-resource.min.js"></script>
 <script src="js/coffee.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-2.1.0.min.js"></script>
+<script src="js/ui-bootstrap-tpls-0.10.0.min.js"></script>
 
 </body>
 </html>

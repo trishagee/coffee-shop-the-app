@@ -1,4 +1,4 @@
-var coffeeApp = angular.module('coffeeApp', ['ngResource'])
+var coffeeApp = angular.module('coffeeApp', ['ngResource', 'ui.bootstrap'])
 
 coffeeApp.factory('CoffeeShopLocator', function ($resource) {
     return $resource('http://localhost:8080/service/coffeeshop/nearest/:latitude/:longitude',
@@ -33,5 +33,6 @@ coffeeApp.controller('DrinksController', function ($scope) {
         {name: 'Tea', family: 'That Other Drink'}
     ]
     $scope.sizes = ['Small', 'Medium', 'Large']
+    $scope.extras = ['Soy', 'Skimmed', 'Caramel']
 });
 
