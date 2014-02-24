@@ -20,6 +20,7 @@
             <b>{{nearestCoffeeShop.name}}</b>
             <a ng-show="nearestCoffeeShop.allValues.location"
                ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.name}}+near+{{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
+            <!--<pre>coffee shop= {{nearestCoffeeShop}}</pre>-->
         </div>
     </div>
 
@@ -28,7 +29,7 @@
 <div class="container">
 
     <div ng-controller="DrinksController">
-        <form novalidate class="CoffeeForm">
+        <form novalidate class="CoffeeForm" ng-submit="giveMeCoffee()">
             Drink: <select ng-model="drink.type" ng-options="type.name for type in types | orderBy:'name'"> </select><br/>
             Size: <select ng-model="drink.size" ng-options="size for size in sizes"> </select><br/>
 
@@ -42,6 +43,8 @@
                 <button ng-click="addOption()">add</button>
                 <br/>
                 <input type="text" ng-model="drink.drinker">
+                <br/>
+                <input type="submit" value="Give Me Coffee"/>
             </div>
         </form>
         <pre>form = {{drink | json}}</pre>
