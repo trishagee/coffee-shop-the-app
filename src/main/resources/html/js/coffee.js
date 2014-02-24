@@ -24,3 +24,14 @@ coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeSh
     };
 });
 
+coffeeApp.controller('DrinksController', function ($scope) {
+    //this could come from the coffee shop itself
+    $scope.types = [
+        {name: 'Americano', family: 'Coffee'},
+        {name: 'Latte', family: 'Coffee'},
+        {name: 'Cappuccino', family: 'Coffee'},
+        {name: 'Tea', family: 'That Other Drink'}
+    ]
+    $scope.sizes = ['Small', 'Medium', 'Large']
+});
+
