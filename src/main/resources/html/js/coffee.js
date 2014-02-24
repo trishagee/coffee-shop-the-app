@@ -24,7 +24,7 @@ coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeSh
     };
 });
 
-coffeeApp.controller('DrinksController', function ($scope) {
+coffeeApp.controller('DrinksController', function ($scope, $filter) {
     //this could come from the coffee shop itself
     $scope.types = [
         {name: 'Americano', family: 'Coffee'},
@@ -33,14 +33,23 @@ coffeeApp.controller('DrinksController', function ($scope) {
         {name: 'Tea', family: 'That Other Drink'}
     ]
     $scope.sizes = ['Small', 'Medium', 'Large']
-    $scope.availableOptions = ['Soy', 'Skimmed', 'Caramel', 'Decaf', 'Whipped Cream', 'vanilla', 'hazelnut', 'sugar free', 'non fat', 'half fat',
-        'half and half', 'half caf', 'chocolate powder', 'double shot', 'wet', 'dry', 'organic', 'extra hot']
+    $scope.availableOptions = [{name: 'Soy', appliesTo:'milk'} , {name:'Skimmed', appliesTo:'milk'}, {name:'Caramel', appliesTo:'syrup'},
+        {name:'Decaf', appliesTo:'caffeine'}, {name:'Whipped Cream', appliesTo:'extras'}, {name: 'vanilla', appliesTo:'syrup'},
+        {name:'hazelnut', appliesTo:'syrup'}, {name:'sugar free', appliesTo:'syrup'}, {name: 'non fat', appliesTo:'milk'},
+        {name:'half fat', appliesTo:'milk'}, {name: 'half and half', appliesTo:'milk'}, {name:'half caf', appliesTo:'caffeine'},
+        {name:'chocolate powder', appliesTo:'extras'}, {name: 'double shot', appliesTo:'preparation'},
+        {name:'wet', appliesTo:'preparation'}, {name:'dry', appliesTo:'preparation'}, {name: 'organic', appliesTo:'milk'},
+        {name:'extra hot', appliesTo:'preparation'}]
+
+    //TODO: remove
+    $scope.drink = {};
+    $scope.drink.selectedOptions = [];
 
     $scope.addOption = function() {
         if (!$scope.drink.selectedOptions) {
             $scope.drink.selectedOptions = [];
         }
-        $scope.drink.selectedOptions.push($scope.newOption);
+        $scope.drink.selectedOptions.push($filter('lowercase')($scope.newOption));
         $scope.newOption = '';
     };
 
