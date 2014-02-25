@@ -37,7 +37,7 @@
         <alert ng-repeat="message in messages" type="message.type" close="closeAlert($index)">
             {{message.msg}}
             <div ng-show="message.orderId">
-                <a ng-href="http://localhost:8080/service/coffeeshop/{{coffeeShopId}}/order/{{message.orderId}}">Order details</a>
+                <a ng-href="/service/coffeeshop/{{coffeeShopId}}/order/{{message.orderId}}">Order details</a>
             </div>
         </alert>
 

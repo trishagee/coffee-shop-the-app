@@ -1,13 +1,13 @@
 var coffeeApp = angular.module('coffeeApp', ['ngResource', 'ui.bootstrap'])
 
 coffeeApp.factory('CoffeeShopLocator', function ($resource) {
-    return $resource('http://localhost:8080/service/coffeeshop/nearest/:latitude/:longitude',
+    return $resource('/service/coffeeshop/nearest/:latitude/:longitude',
         {latitude: '@latitude', longitude: '@longitude'}, {}
     )
 });
 
 coffeeApp.factory('CoffeeOrder', function ($resource) {
-    return $resource('http://localhost:8080/service/coffeeshop/:id/order/',
+    return $resource('/service/coffeeshop/:id/order/',
         {id: '@coffeeShopId'}, {}
     );
 });
