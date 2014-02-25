@@ -101,8 +101,10 @@ class CoffeeShopResourceSpecification extends Specification {
         def coffeeDrinker = 'Me'
         def order = new Order(orderOptions, drinkType, size, coffeeDrinker)
 
+        def coffeeShopId = 89438
+
         when:
-        Response response = coffeeShop.saveOrder(89438, order);
+        Response response = coffeeShop.saveOrder(coffeeShopId, order);
 
         then:
         collection.count == 1
@@ -112,7 +114,9 @@ class CoffeeShopResourceSpecification extends Specification {
         createdOrder['type'].family == drinkType.family
         createdOrder['size'] == size
         createdOrder['drinker'] == coffeeDrinker
+        createdOrder['shopId'] == coffeeShopId
         createdOrder['_id'] != null
+        createdOrder['prettyString'] == null
         println createdOrder
         //    form = {
         //        "selectedOptions": [],

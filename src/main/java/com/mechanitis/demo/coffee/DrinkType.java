@@ -19,4 +19,11 @@ public class DrinkType {
     public String getFamily() {
         return family;
     }
+
+    @Override public String toString() {
+        return "DrinkType{"
+               + "name='" + name + '\''
+               + ", family='" + family + '\''
+               + '}';
+    }
 }

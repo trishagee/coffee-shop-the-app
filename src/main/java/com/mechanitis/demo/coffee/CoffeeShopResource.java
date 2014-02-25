@@ -56,6 +56,11 @@ public class CoffeeShopResource {
         DBCollection underlyingCollection = mongoDatabase.getCollection("orders");
         collection = JacksonDBCollection.wrap(underlyingCollection, Order.class, ObjectId.class);
 
+        //this can be done client side or server side
+        if (order.getCoffeeShopId() == 0) {
+            order.setCoffeeShopId(coffeeShopId);
+        }
+
         WriteResult<Order, ObjectId> writeResult = collection.insert(order);
         if (writeResult == null) {
             return Response.serverError().build();

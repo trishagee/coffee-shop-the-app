@@ -1,8 +1,11 @@
 package com.mechanitis.demo.coffee;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bson.types.ObjectId;
 import org.mongojack.Id;
+
+import java.util.Arrays;
 
 public class Order {
     //    form = {
@@ -18,8 +21,11 @@ public class Order {
     private final DrinkType type;
     private final String size;
     private final String drinker;
+
     @Id
     private ObjectId id;
+    @JsonProperty("shopId")
+    private long coffeeShopId;
 
     public Order(@JsonProperty("selectedOptions") final String[] selectedOptions,
                  @JsonProperty("type") final DrinkType type,
@@ -53,5 +59,29 @@ public class Order {
 
     public ObjectId getId() {
         return id;
+    }
+
+    public long getCoffeeShopId() {
+        return coffeeShopId;
+    }
+
+    public void setCoffeeShopId(final long coffeeShopId) {
+        this.coffeeShopId = coffeeShopId;
+    }
+
+    @JsonIgnore
+    public String getPrettyString() {
+        return toString();
+    }
+
+    @Override public String toString() {
+        return "Order{"
+               + "selectedOptions=" + Arrays.toString(selectedOptions)
+               + ", type=" + type
+               + ", size='" + size + '\''
+               + ", drinker='" + drinker + '\''
+               + ", id=" + id
+               + ", coffeeShopId=" + coffeeShopId
+               + '}';
     }
 }
