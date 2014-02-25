@@ -10,8 +10,6 @@ import com.yammer.dropwizard.config.Environment;
 import java.net.UnknownHostException;
 
 public class CoffeeShopService extends Service<CoffeeShopConfiguration> {
-    private DB database;
-    private MongoClient mongoClient;
 
     public static void main(String[] args) throws Exception {
         new CoffeeShopService().run(args);
@@ -22,17 +20,22 @@ public class CoffeeShopService extends Service<CoffeeShopConfiguration> {
         bootstrap.setName("coffee-shop");
         AssetsBundle bundle = new AssetsBundle("/html/", "/");
         bootstrap.addBundle(bundle);
+    }
+
+    @Override
+    public void run(CoffeeShopConfiguration configuration,
+                    Environment environment) {
+        DB database;
+        MongoClient mongoClient;
+
         try {
             mongoClient = new MongoClient();
             database = mongoClient.getDB("TrishaCoffee");
         } catch (UnknownHostException e) {
             throw new RuntimeException("Could not connect to MongoDB", e);
         }
-    }
 
-    @Override
-    public void run(CoffeeShopConfiguration configuration,
-                    Environment environment) {
+        environment.manage(new MongoClientManager(mongoClient));
         environment.addResource(new CoffeeShopResource(database));
     }
 }
