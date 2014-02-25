@@ -5,6 +5,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import org.bson.types.ObjectId;
+import org.mongojack.DBQuery;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
 
@@ -14,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -52,28 +54,49 @@ public class CoffeeShopResource {
     @POST()
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveOrder(@PathParam("id") long coffeeShopId, Order order) {
-        JacksonDBCollection<Order, ObjectId> collection;
         DBCollection underlyingCollection = mongoDatabase.getCollection("orders");
-        collection = JacksonDBCollection.wrap(underlyingCollection, Order.class, ObjectId.class);
+        JacksonDBCollection<Order, String> collection = JacksonDBCollection.wrap(underlyingCollection, Order.class, String.class);
 
         //this can be done client side or server side
         if (order.getCoffeeShopId() == 0) {
             order.setCoffeeShopId(coffeeShopId);
         }
 
-        WriteResult<Order, ObjectId> writeResult = collection.insert(order);
+        WriteResult<Order, String> writeResult = collection.insert(order);
         if (writeResult == null) {
-            return Response.serverError().build();
+            return Response.serverError().entity(writeResult.getError()).build();
         }
-        order.setId(writeResult.getSavedId());
+        setGeneratedIdOnOrder(writeResult, order);
 
-        return Response.created(URI.create(order.getId().toString())).build();
+        return Response.created(URI.create(order.getId().toString())).entity(order).build();
+    }
+
+    @Path("{id}/order/{orderId}")
+    @GET
+    public Order getOrder(@PathParam("id") long coffeeShopId, @PathParam("orderId") String orderId) {
+        DBCollection underlyingCollection = mongoDatabase.getCollection("orders");
+        JacksonDBCollection<Order, ObjectId> collection = JacksonDBCollection.wrap(underlyingCollection, Order.class, ObjectId.class);
+
+        Order order = collection.findOne(DBQuery.is("_id", orderId));
+        if (order != null) {
+            return order;
+        } else {
+            throw new WebApplicationException(404);
+        }
     }
 
     @Path("dummy")
     @GET
     public CoffeeShop getDummy() {
         return new CoffeeShop("A dummy coffee shop", new BasicDBObject("some", "thing"));
+    }
+
+    private void setGeneratedIdOnOrder(final WriteResult<Order, String> writeResult, final Order order) {
+        String savedId = writeResult.getSavedId();
+        if (savedId != null) {
+            //if it's not null, it was generated.  If it's null, it already existed on the order and didn't need to be generated
+            order.setId(savedId);
+        }
     }
 
 }

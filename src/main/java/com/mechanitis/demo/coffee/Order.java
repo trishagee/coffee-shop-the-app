@@ -22,8 +22,10 @@ public class Order {
     private final String size;
     private final String drinker;
 
+    @org.mongojack.ObjectId
     @Id
-    private ObjectId id;
+    private String id;
+
     @JsonProperty("shopId")
     private long coffeeShopId;
 
@@ -53,11 +55,11 @@ public class Order {
         return drinker;
     }
 
-    public void setId(final ObjectId id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
@@ -83,5 +85,49 @@ public class Order {
                + ", id=" + id
                + ", coffeeShopId=" + coffeeShopId
                + '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Order order = (Order) o;
+
+        if (coffeeShopId != order.coffeeShopId) {
+            return false;
+        }
+        if (!drinker.equals(order.drinker)) {
+            return false;
+        }
+        if (id != null ? !id.equals(order.id) : order.id != null) {
+            return false;
+        }
+        if (!Arrays.equals(selectedOptions, order.selectedOptions)) {
+            return false;
+        }
+        if (!size.equals(order.size)) {
+            return false;
+        }
+        if (!type.equals(order.type)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(selectedOptions);
+        result = 31 * result + type.hashCode();
+        result = 31 * result + size.hashCode();
+        result = 31 * result + drinker.hashCode();
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (int) (coffeeShopId ^ (coffeeShopId >>> 32));
+        return result;
     }
 }

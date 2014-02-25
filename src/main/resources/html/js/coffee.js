@@ -72,6 +72,7 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder,
         {name: 'organic', appliesTo: 'milk'},
         {name: 'extra hot', appliesTo: 'preparation'}
     ]
+    $scope.messages = [];
 
     $scope.addOption = function () {
         if (!$scope.drink.selectedOptions) {
@@ -81,8 +82,22 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder,
         $scope.newOption = '';
     };
     $scope.giveMeCoffee = function () {
-        CoffeeOrder.save({ id: LocalCoffeeShop.getShop().allValues.openStreetMapId}, $scope.drink);
+        var selectedShop = LocalCoffeeShop.getShop();
+        if (selectedShop == null) {
+            $scope.messages.push({type: 'danger', msg: 'You need to find your local coffee shop before you can submit an order'});
+        }else {
+            $scope.coffeeShopId = selectedShop.allValues.openStreetMapId;
+            CoffeeOrder.save({ id: $scope.coffeeShopId}, $scope.drink,
+                function (result) {
+                    $scope.messages.push({type: 'success', msg: 'Order sent!', orderId: result.id});
+                },
+                function (errorResponse) {
+                    $scope.messages.push({type: 'danger', msg: 'Something went wrong with your order.', error: errorResponse.data});
+                });
+        }
     }
+    $scope.closeAlert = function (index) {
+        $scope.messages.splice(index, 1);
+    };
 
 });
-

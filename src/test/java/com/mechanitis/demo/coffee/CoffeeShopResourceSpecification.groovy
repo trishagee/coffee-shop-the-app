@@ -6,6 +6,7 @@ import com.mongodb.MongoClient
 import org.bson.types.ObjectId
 import spock.lang.Specification
 
+import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response
 
 class CoffeeShopResourceSpecification extends Specification {
@@ -74,7 +75,7 @@ class CoffeeShopResourceSpecification extends Specification {
 
         //set ID for testing
         def orderId = new ObjectId()
-        order.setId(orderId)
+        order.setId(orderId.toString())
 
         when:
         Response response = coffeeShop.saveOrder(75847854, order);
@@ -127,6 +128,50 @@ class CoffeeShopResourceSpecification extends Specification {
         //        "size": "Small",
         //        "drinker": "Trisha"
         //    }
+
+        cleanup:
+        mongoClient.close()
+    }
+
+    //functional test
+    def 'should return me an existing order'() {
+        given:
+        def mongoClient = new MongoClient()
+        def database = mongoClient.getDB("TrishaCoffee")
+
+        def coffeeShop = new CoffeeShopResource(database)
+        def expectedOrder = new Order([] as String[], new DrinkType('filter', 'coffee'), 'super small', 'Yo')
+
+        def coffeeShopId = 89438
+        coffeeShop.saveOrder(coffeeShopId, expectedOrder);
+
+        when:
+        Order actualOrder = coffeeShop.getOrder(coffeeShopId, expectedOrder.getId());
+
+        then:
+        actualOrder != null
+        actualOrder == expectedOrder
+
+        cleanup:
+        mongoClient.close()
+    }
+
+    //functional test
+    def 'should throw a 404 if the order is not found'() {
+        given:
+        def mongoClient = new MongoClient()
+        def database = mongoClient.getDB("TrishaCoffee")
+        def coffeeShop = new CoffeeShopResource(database)
+
+        when:
+        coffeeShop.getOrder(7474, new ObjectId().toString());
+
+        then:
+        def e = thrown (WebApplicationException)
+        e.response.status == 404
+
+        cleanup:
+        mongoClient.close()
     }
 
 }

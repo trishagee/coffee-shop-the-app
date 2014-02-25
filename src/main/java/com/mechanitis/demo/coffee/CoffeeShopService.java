@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 
 public class CoffeeShopService extends Service<CoffeeShopConfiguration> {
     private DB database;
+    private MongoClient mongoClient;
 
     public static void main(String[] args) throws Exception {
         new CoffeeShopService().run(args);
@@ -22,7 +23,7 @@ public class CoffeeShopService extends Service<CoffeeShopConfiguration> {
         AssetsBundle bundle = new AssetsBundle("/html/", "/");
         bootstrap.addBundle(bundle);
         try {
-            MongoClient mongoClient = new MongoClient();
+            mongoClient = new MongoClient();
             database = mongoClient.getDB("TrishaCoffee");
         } catch (UnknownHostException e) {
             throw new RuntimeException("Could not connect to MongoDB", e);

@@ -48,12 +48,17 @@
             </div>
         </form>
         <pre>form = {{drink | json}}</pre>
+
+        <alert ng-repeat="message in messages" type="message.type" close="closeAlert($index)">
+            {{message.msg}}
+            <div ng-show="message.orderId">
+                <a ng-href="http://localhost:8080/service/coffeeshop/{{coffeeShopId}}/order/{{message.orderId}}">Order details</a>
+            </div>
+        </alert>
     </div>
 
 </div>
 
-
-<div style="color: grey">Enter name here</div>
 
 <script src="js/angular.min.js"></script>
 <script src="js/angular-resource.min.js"></script>
