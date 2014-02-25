@@ -15,6 +15,7 @@ dependencies {
     compile group: 'org.mongojack', name: 'mongojack', version: '2.0.0-RC5'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile 'cglib:cglib-nodep:3.1'
     testCompile 'org.codehaus.groovy:groovy-all:2.2.1'
     testCompile group: 'com.yammer.dropwizard', name: 'dropwizard-testing', version: '0.6.2'
     testCompile group: 'com.yammer.dropwizard', name: 'dropwizard-client', version: '0.6.2'

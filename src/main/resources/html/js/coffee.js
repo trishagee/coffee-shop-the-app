@@ -73,10 +73,6 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder,
         {name: 'extra hot', appliesTo: 'preparation'}
     ]
 
-    //TODO: remove
-    $scope.drink = {};
-    $scope.drink.selectedOptions = [];
-
     $scope.addOption = function () {
         if (!$scope.drink.selectedOptions) {
             $scope.drink.selectedOptions = [];
