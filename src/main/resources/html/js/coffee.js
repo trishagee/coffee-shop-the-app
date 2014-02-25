@@ -26,7 +26,7 @@ coffeeApp.service('LocalCoffeeShop', function () {
 
 coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeShopLocator, LocalCoffeeShop) {
     $scope.supportsGeo = $window.navigator;
-    $scope.getNearestCoffeeShop = function (latitude, longitude) {
+    $scope.getCoffeeShopAt = function (latitude, longitude) {
         $scope.nearestCoffeeShop = CoffeeShopLocator.get({latitude: latitude, longitude: longitude});
         if ($scope.nearestCoffeeShop.name == null) {
             //default coffee shop
@@ -34,9 +34,9 @@ coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeSh
         }
         LocalCoffeeShop.setShop($scope.nearestCoffeeShop);
     };
-    $scope.getGeoLocation = function () {
+    $scope.findCoffeeShopNearestToMe = function () {
         window.navigator.geolocation.getCurrentPosition(function (position) {
-            $scope.getNearestCoffeeShop(position.coords.latitude, position.coords.longitude)
+            $scope.getCoffeeShopAt(position.coords.latitude, position.coords.longitude)
         }, function (error) {
             alert(error);
         });
@@ -80,6 +80,7 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder,
         }
         $scope.drink.selectedOptions.push($filter('lowercase')($scope.newOption));
         $scope.newOption = '';
+        return;
     };
     $scope.giveMeCoffee = function () {
         var selectedShop = LocalCoffeeShop.getShop();
@@ -95,7 +96,7 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder,
                     $scope.messages.push({type: 'danger', msg: 'Something went wrong with your order.', error: errorResponse.data});
                 });
         }
-    }
+    };
     $scope.closeAlert = function (index) {
         $scope.messages.splice(index, 1);
     };

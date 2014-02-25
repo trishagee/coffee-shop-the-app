@@ -1,27 +1,32 @@
 <!DOCTYPE html>
-<html ng-app="coffeeApp">
+<html lang="en" ng-app="coffeeApp">
 <head>
     <title>Trish's Coffee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
 <div class="container">
     <div ng-controller="CoffeeShopController" class="SelectedCoffeeShop">
+        <div class="row" ng-hide="supportsGeo">
+            <p>Your browser doesn't let us get your location, sorry.</p>
+        </div>
+        <div class="row" ng-show="supportsGeo">
+            <div class="col-md-1">
+                <button ng-click="findCoffeeShopNearestToMe()" class="btn btn-default" class="center-block">
+                    Show my coffee shop
+                </button>
+            </div>
+        </div>
+        <div class="panel panel-default" ng-show="nearestCoffeeShop">
+            <div class="panel-body">
+                <p><strong>{{nearestCoffeeShop.name}}</strong>
+                    <a ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.name}}+near+{{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
+                </p>
+            </div>
+        </div>
 
-        <div ng-hide="supportsGeo">
-            Your browser doesn't let us get your location, sorry.
-        </div>
-        <div ng-show="supportsGeo">
-            <button ng-click="getGeoLocation()">
-                Show my coffee shop
-            </button>
-        </div>
-        <div ng-show="nearestCoffeeShop">
-            <b>{{nearestCoffeeShop.name}}</b>
-            <a ng-show="nearestCoffeeShop.allValues.location"
-               ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.name}}+near+{{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
-            <!--<pre>coffee shop= {{nearestCoffeeShop}}</pre>-->
-        </div>
+        <!--<pre>coffee shop= {{nearestCoffeeShop}}</pre>-->
     </div>
 
 </div>
@@ -29,32 +34,52 @@
 <div class="container">
 
     <div ng-controller="DrinksController">
-        <form novalidate class="CoffeeForm" ng-submit="giveMeCoffee()">
-            Drink: <select ng-model="drink.type" ng-options="type.name for type in types | orderBy:'name'"> </select><br/>
-            Size: <select ng-model="drink.size" ng-options="size for size in sizes"> </select><br/>
-
-            <div ng-show="drink.type && drink.size">
-                Extras (for example milk, syrups): <br/>
-                <span ng-repeat="selectedOption in drink.selectedOptions"> {{selectedOption}}; </span>
-
-                <input type="text" ng-model="newOption"
-                       typeahead="availableOption.name for availableOption in availableOptions | filter:$viewValue | orderBy:'name'"
-                       class="form-control" placeholder="Type milk or syrups or extras here">
-                <button ng-click="addOption()">add</button>
-                <br/>
-                <input type="text" ng-model="drink.drinker">
-                <br/>
-                <input type="submit" value="Give Me Coffee"/>
-            </div>
-        </form>
-        <!--<pre>form = {{drink | json}}</pre>-->
-
         <alert ng-repeat="message in messages" type="message.type" close="closeAlert($index)">
             {{message.msg}}
             <div ng-show="message.orderId">
                 <a ng-href="http://localhost:8080/service/coffeeshop/{{coffeeShopId}}/order/{{message.orderId}}">Order details</a>
             </div>
         </alert>
+
+        <form class="CoffeeForm" role="form" ng-submit="giveMeCoffee()">
+            <div class="form-group">
+                <label for="drink.type" class="control-label">Drink</label>
+                <select ng-model="drink.type" ng-options="type.name for type in types | orderBy:'name'" ng-required="true"
+                        class="form-control"> </select>
+            </div>
+            <div class="form-group">
+                <label for="drink.size" class="control-label">Size</label>
+                <select ng-model="drink.size" ng-options="size for size in sizes" ng-required="true"
+                        class="form-control"> </select>
+            </div>
+
+            <div class="form-group" ng-show="drink.type && drink.size">
+                <label for="newOption" class="control-label">Options</label>
+
+                <div class="row">
+
+                    <div class="col-xs-4">
+                        <input type="text" ng-model="newOption"
+                               typeahead="availableOption.name for availableOption in availableOptions | filter:$viewValue | orderBy:'name'"
+                               class="form-control" placeholder="Type milk or syrups or extras here">
+                    </div>
+                    <!--<button type="button" class="btn btn-default" ng-click="addOption()">add</button>-->
+                    <input type="button" class="btn btn-default" ng-click="addOption()" value="add"></input>
+                </div>
+            </div>
+            <div class="form-group" ng-show="drink.type && drink.size">
+                <span ng-repeat="selectedOption in drink.selectedOptions"> {{selectedOption}}; </span>
+            </div>
+            <div class="form-group" ng-show="drink.type && drink.size">
+                <label for="drink.drinker" class="control-label">Your Name</label>
+                <input type="text" ng-model="drink.drinker" class="form-control" required="true">
+            </div>
+            <div class="form-group" ng-show="drink.type && drink.size">
+                <!--<submit type="button" class="btn btn-default btn-lg" ng-click="giveMeCoffee()">Give Me Coffee!!</submit>-->
+                <input type="submit" class="btn btn-default btn-lg" value="Give Me Coffee!!"></input>
+            </div>
+        </form>
+        <!--<pre>form = {{drink | json}}</pre>-->
     </div>
 
 </div>
