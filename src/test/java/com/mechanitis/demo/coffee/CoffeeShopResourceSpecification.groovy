@@ -51,7 +51,7 @@ class CoffeeShopResourceSpecification extends Specification {
         println nearestShop.allValues
     }
 
-    def 'should return null if no coffee shop found'() {
+    def 'should throw an exception if no coffee shop found'() {
         given:
         def mongoClient = new MongoClient()
         def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
@@ -62,7 +62,8 @@ class CoffeeShopResourceSpecification extends Specification {
         def nearestShop = coffeeShop.getNearest(latitude, longitude)
 
         then:
-        nearestShop == null
+        def exception = thrown(WebApplicationException)
+        exception.response.status == Response.Status.NOT_FOUND.statusCode
     }
 
     def 'should give me back the order ID when an order is successfully created'() {

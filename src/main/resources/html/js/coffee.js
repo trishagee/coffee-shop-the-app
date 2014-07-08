@@ -53,11 +53,11 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder,
     ]
     $scope.sizes = ['Small', 'Medium', 'Large']
     $scope.availableOptions = [
-        {name: 'Soy', appliesTo: 'milk'} ,
-        {name: 'Skimmed', appliesTo: 'milk'},
-        {name: 'Caramel', appliesTo: 'syrup'},
-        {name: 'Decaf', appliesTo: 'caffeine'},
-        {name: 'Whipped Cream', appliesTo: 'extras'},
+        {name: 'soy', appliesTo: 'milk'} ,
+        {name: 'skimmed', appliesTo: 'milk'},
+        {name: 'caramel', appliesTo: 'syrup'},
+        {name: 'decaf', appliesTo: 'caffeine'},
+        {name: 'whipped Cream', appliesTo: 'extras'},
         {name: 'vanilla', appliesTo: 'syrup'},
         {name: 'hazelnut', appliesTo: 'syrup'},
         {name: 'sugar free', appliesTo: 'syrup'},
@@ -80,7 +80,6 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder,
         }
         $scope.drink.selectedOptions.push($filter('lowercase')($scope.newOption));
         $scope.newOption = '';
-        return;
     };
     $scope.giveMeCoffee = function () {
         var selectedShop = LocalCoffeeShop.getShop();

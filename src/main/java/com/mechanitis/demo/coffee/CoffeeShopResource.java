@@ -45,7 +45,7 @@ public class CoffeeShopResource {
                                                                                                                       latitude)))
                                                                                      .append("$maxDistance", 2000))));
         if (coffeeShop == null) {
-            return null;
+            throw new WebApplicationException(404);
         }
         return new CoffeeShop((String) coffeeShop.get("name"), coffeeShop);
     }
