@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response
 class CoffeeShopResourceSpecification extends Specification {
     def 'should return a dummy shop for testing'() {
         given:
-        def coffeeShop = new CoffeeShopResource(null)
+        def coffeeShop = new CoffeeShopResource(null, null)
 
         when:
         def nearestShop = coffeeShop.getDummy()
@@ -24,7 +24,7 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should return Cafe Nero as the closest coffee shop to Westminster Abbey'() {
         given:
         def mongoClient = new MongoClient()
-        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
+        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"), mongoClient)
 
         when:
         double latitude = 51.4994678
@@ -39,7 +39,7 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should return Costa as the closest coffee shop to Earls Court Road'() {
         given:
         def mongoClient = new MongoClient()
-        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
+        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"), mongoClient)
 
         when:
         double latitude = 51.4950233
@@ -54,7 +54,7 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should throw an exception if no coffee shop found'() {
         given:
         def mongoClient = new MongoClient()
-        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"))
+        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"), mongoClient)
 
         when:
         double latitude = 37.3981841
@@ -68,10 +68,14 @@ class CoffeeShopResourceSpecification extends Specification {
 
     def 'should give me back the order ID when an order is successfully created'() {
         given:
-        DB database = Mock()
-        database.getCollection(_) >> { Mock(DBCollection) }
+        def collection = Mock(DBCollection)
+        collection.getName() >> 'CollectionName'
+        def database = Mock(DB)
+        database.getCollection(_) >> { collection }
+        def mongoClient = Mock(MongoClient)
+        mongoClient.getDB(_) >> { database }
 
-        def coffeeShop = new CoffeeShopResource(database)
+        def coffeeShop = new CoffeeShopResource(database, mongoClient)
         def order = new Order(new String[0], new DrinkType('espresso', 'coffee'), 'medium', 'Me')
 
         //set ID for testing
@@ -91,18 +95,17 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should save all fields to the database when order is saved'() {
         given:
         def mongoClient = new MongoClient()
-        def database = mongoClient.getDB("TrishaCoffee")
-        def collection = database.getCollection('orders')
+        def database = mongoClient.getDB("coffee-app-database")
+        def collection = database.getCollection('Order')
         collection.drop();
 
-        def coffeeShop = new CoffeeShopResource(database)
+        def coffeeShop = new CoffeeShopResource(database, mongoClient)
 
         String[] orderOptions = ['soy milk']
         def drinkType = new DrinkType('espresso', 'coffee')
         def size = 'medium'
         def coffeeDrinker = 'Me'
         def order = new Order(orderOptions, drinkType, size, coffeeDrinker)
-
         def coffeeShopId = 89438
 
         when:
@@ -111,15 +114,15 @@ class CoffeeShopResourceSpecification extends Specification {
         then:
         collection.count == 1
         def createdOrder = collection.findOne()
+        println createdOrder
         createdOrder['selectedOptions'] == orderOptions
         createdOrder['type'].name == drinkType.name
         createdOrder['type'].family == drinkType.family
         createdOrder['size'] == size
         createdOrder['drinker'] == coffeeDrinker
-        createdOrder['shopId'] == coffeeShopId
+        createdOrder['coffeeShopId'] == coffeeShopId
         createdOrder['_id'] != null
         createdOrder['prettyString'] == null
-        println createdOrder
         //    form = {
         //        "selectedOptions": [],
         //        "type": {
@@ -138,9 +141,7 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should return me an existing order'() {
         given:
         def mongoClient = new MongoClient()
-        def database = mongoClient.getDB("TrishaCoffee")
-
-        def coffeeShop = new CoffeeShopResource(database)
+        def coffeeShop = new CoffeeShopResource(null, mongoClient)
         def expectedOrder = new Order([] as String[], new DrinkType('filter', 'coffee'), 'super small', 'Yo')
 
         def coffeeShopId = 89438
@@ -162,13 +163,13 @@ class CoffeeShopResourceSpecification extends Specification {
         given:
         def mongoClient = new MongoClient()
         def database = mongoClient.getDB("TrishaCoffee")
-        def coffeeShop = new CoffeeShopResource(database)
+        def coffeeShop = new CoffeeShopResource(database, mongoClient)
 
         when:
         coffeeShop.getOrder(7474, new ObjectId().toString());
 
         then:
-        def e = thrown (WebApplicationException)
+        def e = thrown(WebApplicationException)
         e.response.status == 404
 
         cleanup:

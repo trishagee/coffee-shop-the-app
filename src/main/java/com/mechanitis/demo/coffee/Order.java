@@ -2,8 +2,7 @@ package com.mechanitis.demo.coffee;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.bson.types.ObjectId;
-import org.mongojack.Id;
+import org.mongodb.morphia.annotations.Id;
 
 import java.util.Arrays;
 
@@ -17,12 +16,11 @@ public class Order {
     //        "size": "Small",
     //        "drinker": "Trisha"
     //    }
-    private final String[] selectedOptions;
-    private final DrinkType type;
-    private final String size;
-    private final String drinker;
+    private String[] selectedOptions;
+    private DrinkType type;
+    private String size;
+    private String drinker;
 
-    @org.mongojack.ObjectId
     @Id
     private String id;
 
@@ -37,6 +35,9 @@ public class Order {
         this.type = type;
         this.size = size;
         this.drinker = drinker;
+    }
+
+    public Order() {
     }
 
     public String[] getSelectedOptions() {
@@ -76,7 +77,8 @@ public class Order {
         return toString();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Order{"
                + "selectedOptions=" + Arrays.toString(selectedOptions)
                + ", type=" + type

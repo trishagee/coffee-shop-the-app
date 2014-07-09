@@ -36,6 +36,6 @@ public class CoffeeShopService extends Service<CoffeeShopConfiguration> {
         }
 
         environment.manage(new MongoClientManager(mongoClient));
-        environment.addResource(new CoffeeShopResource(database));
+        environment.addResource(new CoffeeShopResource(database, mongoClient));
     }
 }

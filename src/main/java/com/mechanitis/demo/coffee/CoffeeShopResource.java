@@ -4,10 +4,10 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 import org.bson.types.ObjectId;
-import org.mongojack.DBQuery;
-import org.mongojack.JacksonDBCollection;
-import org.mongojack.WriteResult;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,9 +27,11 @@ import static java.util.Arrays.asList;
 public class CoffeeShopResource {
 
     private final DB mongoDatabase;
+    private final Datastore datastore;
 
-    public CoffeeShopResource(DB mongoDatabase) {
+    public CoffeeShopResource(final DB mongoDatabase, final MongoClient mongoClient) {
         this.mongoDatabase = mongoDatabase;
+        datastore = new Morphia().createDatastore(mongoClient, "coffee-app-database");
     }
 
     @Path("nearest/{latitude}/{longitude}")
@@ -54,19 +56,8 @@ public class CoffeeShopResource {
     @POST()
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveOrder(@PathParam("id") long coffeeShopId, Order order) {
-        DBCollection underlyingCollection = mongoDatabase.getCollection("orders");
-        JacksonDBCollection<Order, String> collection = JacksonDBCollection.wrap(underlyingCollection, Order.class, String.class);
-
-        //this can be done client side or server side
-        if (order.getCoffeeShopId() == 0) {
-            order.setCoffeeShopId(coffeeShopId);
-        }
-
-        WriteResult<Order, String> writeResult = collection.insert(order);
-        if (writeResult == null) {
-            return Response.serverError().entity(writeResult.getError()).build();
-        }
-        setGeneratedIdOnOrder(writeResult, order);
+        order.setCoffeeShopId(coffeeShopId);
+        datastore.save(order);
 
         return Response.created(URI.create(order.getId().toString())).entity(order).build();
     }
@@ -74,29 +65,18 @@ public class CoffeeShopResource {
     @Path("{id}/order/{orderId}")
     @GET
     public Order getOrder(@PathParam("id") long coffeeShopId, @PathParam("orderId") String orderId) {
-        DBCollection underlyingCollection = mongoDatabase.getCollection("orders");
-        JacksonDBCollection<Order, ObjectId> collection = JacksonDBCollection.wrap(underlyingCollection, Order.class, ObjectId.class);
+        Order order = datastore.get(Order.class, new ObjectId(orderId));
 
-        Order order = collection.findOne(DBQuery.is("_id", orderId));
-        if (order != null) {
-            return order;
-        } else {
+        if (order == null) {
             throw new WebApplicationException(404);
         }
+        return order;
     }
 
     @Path("dummy")
     @GET
     public CoffeeShop getDummy() {
         return new CoffeeShop("A dummy coffee shop", new BasicDBObject("some", "thing"));
-    }
-
-    private void setGeneratedIdOnOrder(final WriteResult<Order, String> writeResult, final Order order) {
-        String savedId = writeResult.getSavedId();
-        if (savedId != null) {
-            //if it's not null, it was generated.  If it's null, it already existed on the order and didn't need to be generated
-            order.setId(savedId);
-        }
     }
 
 }

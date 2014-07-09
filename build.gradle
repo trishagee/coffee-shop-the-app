@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
     compile 'com.yammer.dropwizard:dropwizard-core:0.6.2'
-    compile 'org.mongojack:mongojack:2.0.0'
+    compile 'org.mongodb.morphia:morphia:0.108'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'cglib:cglib-nodep:3.1'
