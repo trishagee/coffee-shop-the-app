@@ -12,7 +12,8 @@ import javax.ws.rs.core.Response
 class CoffeeShopResourceSpecification extends Specification {
     def 'should return a dummy shop for testing'() {
         given:
-        def coffeeShop = new CoffeeShopResource(null, null)
+        def mongoClient = Mock(MongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
 
         when:
         def nearestShop = coffeeShop.getDummy()
@@ -24,7 +25,7 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should return Cafe Nero as the closest coffee shop to Westminster Abbey'() {
         given:
         def mongoClient = new MongoClient()
-        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"), mongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
 
         when:
         double latitude = 51.4994678
@@ -33,13 +34,12 @@ class CoffeeShopResourceSpecification extends Specification {
 
         then:
         nearestShop.name == 'Caffè Nero'
-        println nearestShop.allValues
     }
 
     def 'should return Costa as the closest coffee shop to Earls Court Road'() {
         given:
         def mongoClient = new MongoClient()
-        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"), mongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
 
         when:
         double latitude = 51.4950233
@@ -48,13 +48,13 @@ class CoffeeShopResourceSpecification extends Specification {
 
         then:
         nearestShop.name == 'Costa'
-        println nearestShop.allValues
+        println nearestShop
     }
 
     def 'should throw an exception if no coffee shop found'() {
         given:
         def mongoClient = new MongoClient()
-        def coffeeShop = new CoffeeShopResource(mongoClient.getDB("TrishaCoffee"), mongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
 
         when:
         double latitude = 37.3981841
@@ -75,7 +75,7 @@ class CoffeeShopResourceSpecification extends Specification {
         def mongoClient = Mock(MongoClient)
         mongoClient.getDB(_) >> { database }
 
-        def coffeeShop = new CoffeeShopResource(database, mongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
         def order = new Order(new String[0], new DrinkType('espresso', 'coffee'), 'medium', 'Me')
 
         //set ID for testing
@@ -99,7 +99,7 @@ class CoffeeShopResourceSpecification extends Specification {
         def collection = database.getCollection('Order')
         collection.drop();
 
-        def coffeeShop = new CoffeeShopResource(database, mongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
 
         String[] orderOptions = ['soy milk']
         def drinkType = new DrinkType('espresso', 'coffee')
@@ -141,7 +141,7 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should return me an existing order'() {
         given:
         def mongoClient = new MongoClient()
-        def coffeeShop = new CoffeeShopResource(null, mongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
         def expectedOrder = new Order([] as String[], new DrinkType('filter', 'coffee'), 'super small', 'Yo')
 
         def coffeeShopId = 89438
@@ -163,7 +163,7 @@ class CoffeeShopResourceSpecification extends Specification {
         given:
         def mongoClient = new MongoClient()
         def database = mongoClient.getDB("TrishaCoffee")
-        def coffeeShop = new CoffeeShopResource(database, mongoClient)
+        def coffeeShop = new CoffeeShopResource(mongoClient)
 
         when:
         coffeeShop.getOrder(7474, new ObjectId().toString());

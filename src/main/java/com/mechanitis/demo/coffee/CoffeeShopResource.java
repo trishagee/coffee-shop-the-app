@@ -1,9 +1,5 @@
 package com.mechanitis.demo.coffee;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -20,36 +16,27 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 
-import static java.util.Arrays.asList;
-
 @Path("/coffeeshop")
 @Produces(MediaType.APPLICATION_JSON)
 public class CoffeeShopResource {
-
-    private final DB mongoDatabase;
     private final Datastore datastore;
 
-    public CoffeeShopResource(final DB mongoDatabase, final MongoClient mongoClient) {
-        this.mongoDatabase = mongoDatabase;
+    public CoffeeShopResource(final MongoClient mongoClient) {
         datastore = new Morphia().createDatastore(mongoClient, "coffee-app-database");
     }
 
     @Path("nearest/{latitude}/{longitude}")
     @GET
     public CoffeeShop getNearest(@PathParam("latitude") double latitude, @PathParam("longitude") double longitude) {
-        DBCollection collection = mongoDatabase.getCollection("coffeeshop");
-        DBObject coffeeShop = collection.findOne(new BasicDBObject("location",
-                                                                   new BasicDBObject("$near",
-                                                                                     new BasicDBObject("$geometry",
-                                                                                                       new BasicDBObject("type", "Point")
-                                                                                                       .append("coordinates",
-                                                                                                               asList(longitude,
-                                                                                                                      latitude)))
-                                                                                     .append("$maxDistance", 2000))));
+        CoffeeShop coffeeShop = datastore.find(CoffeeShop.class)
+                                         .field("location")
+                                         .near(longitude, latitude, 0.2, true)
+                                         .get();
+
         if (coffeeShop == null) {
             throw new WebApplicationException(404);
         }
-        return new CoffeeShop((String) coffeeShop.get("name"), coffeeShop);
+        return coffeeShop;
     }
 
     @Path("{id}/order/")
@@ -76,7 +63,7 @@ public class CoffeeShopResource {
     @Path("dummy")
     @GET
     public CoffeeShop getDummy() {
-        return new CoffeeShop("A dummy coffee shop", new BasicDBObject("some", "thing"));
+        return new CoffeeShop("A dummy coffee shop");
     }
 
 }

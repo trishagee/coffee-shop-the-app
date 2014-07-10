@@ -25,17 +25,15 @@ public class CoffeeShopService extends Service<CoffeeShopConfiguration> {
     @Override
     public void run(CoffeeShopConfiguration configuration,
                     Environment environment) {
-        DB database;
         MongoClient mongoClient;
 
         try {
             mongoClient = new MongoClient();
-            database = mongoClient.getDB("TrishaCoffee");
         } catch (UnknownHostException e) {
             throw new RuntimeException("Could not connect to MongoDB", e);
         }
 
         environment.manage(new MongoClientManager(mongoClient));
-        environment.addResource(new CoffeeShopResource(database, mongoClient));
+        environment.addResource(new CoffeeShopResource(mongoClient));
     }
 }

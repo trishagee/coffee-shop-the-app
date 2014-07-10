@@ -77,16 +77,4 @@ class XMLConverterSpecification extends Specification {
 
     }
 
-    def 'expect'() {
-        expect:
-        def file = new File('src/test/resources/coffee.xml')
-        println new File(".").getAbsolutePath()
-
-        println file
-        def xmlSlurper = new XmlSlurper().parse(file)
-
-        println xmlSlurper
-    }
-
-
 }
