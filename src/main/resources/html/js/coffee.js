@@ -15,20 +15,17 @@ coffeeApp.factory('CoffeeOrder', function ($resource) {
 coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeShopLocator) {
     $scope.findCoffeeShopNearestToMe = function () {
         window.navigator.geolocation.getCurrentPosition(function (position) {
-            $scope.getCoffeeShopAt(position.coords.latitude, position.coords.longitude)
-        }, null);
-    };
-    $scope.getCoffeeShopAt = function (latitude, longitude) {
-        CoffeeShopLocator.get({latitude: latitude, longitude: longitude}).$promise
-            .then(
-            function (value) {
-                $scope.nearestCoffeeShop = value;
-            })
-            .catch(
-            function (value) {
-                //default coffee shop
-                $scope.getCoffeeShopAt(51.4994678, -0.128888);
-            });
+            CoffeeShopLocator.get({latitude: position.coords.latitude, longitude: position.coords.longitude}).$promise
+                .then(
+                function (value) {
+                    $scope.nearestCoffeeShop = value;
+                })
+                .catch(
+                function (value) {
+                    //default coffee shop
+                    $scope.getCoffeeShopAt(51.4994678, -0.128888);
+                });
+        });
     };
     $scope.findCoffeeShopNearestToMe();
 });
@@ -75,7 +72,7 @@ coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder)
         var selectedShop = LocalCoffeeShop.getShop();
         if (selectedShop == null) {
             $scope.messages.push({type: 'danger', msg: 'You need to find your local coffee shop before you can submit an order'});
-        }else {
+        } else {
             $scope.coffeeShopId = selectedShop.allValues.openStreetMapId;
             CoffeeOrder.save({ id: $scope.coffeeShopId}, $scope.drink,
                 function (result) {
