@@ -7,18 +7,25 @@ import java.util.Arrays;
 
 @Entity
 public class CoffeeShop {
+    @Id
+    private String id;
+    
     private String name;
     private Location location;
     private int openStreetMapId;
-    
-    @Id
-    private String id;
 
     public CoffeeShop(final String name) {
         this.name = name;
     }
 
     public CoffeeShop() {
+    }
+
+    public CoffeeShop(final String name, final Location location, final int openStreetMapId, final String id) {
+        this.name = name;
+        this.location = location;
+        this.openStreetMapId = openStreetMapId;
+        this.id = id;
     }
 
     public String getName() {
@@ -35,8 +42,13 @@ public class CoffeeShop {
                + '}';
     }
 
-    private static class Location {
+    static class Location {
         private double[] coordinates = new double[2];
         private String type;
+
+        Location(final double[] coordinates, final String type) {
+            this.coordinates = coordinates;
+            this.type = type;
+        }
     }
 }

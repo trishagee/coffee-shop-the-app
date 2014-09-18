@@ -24,22 +24,23 @@ coffeeApp.service('LocalCoffeeShop', function () {
     };
 });
 
-coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeShopLocator, LocalCoffeeShop) {
-    $scope.supportsGeo = $window.navigator;
-    $scope.getCoffeeShopAt = function (latitude, longitude) {
-        $scope.nearestCoffeeShop = CoffeeShopLocator.get({latitude: latitude, longitude: longitude});
-        if ($scope.nearestCoffeeShop.name == null) {
-            //default coffee shop
-            $scope.nearestCoffeeShop = CoffeeShopLocator.get({latitude: 51.4994678, longitude: -0.128888});
-        }
-        LocalCoffeeShop.setShop($scope.nearestCoffeeShop);
-    };
+coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeShopLocator) {
     $scope.findCoffeeShopNearestToMe = function () {
         window.navigator.geolocation.getCurrentPosition(function (position) {
             $scope.getCoffeeShopAt(position.coords.latitude, position.coords.longitude)
-        }, function (error) {
-            alert(error);
-        });
+        }, null);
+    };
+    $scope.getCoffeeShopAt = function (latitude, longitude) {
+        CoffeeShopLocator.get({latitude: latitude, longitude: longitude}).$promise
+            .then(
+            function (value) {
+                $scope.nearestCoffeeShop = value;
+            })
+            .catch(
+            function (value) {
+                //default coffee shop
+                $scope.getCoffeeShopAt(51.4994678, -0.128888);
+            });
     };
 });
 

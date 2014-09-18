@@ -4,6 +4,7 @@ import com.mongodb.DB
 import com.mongodb.DBCollection
 import com.mongodb.MongoClient
 import org.bson.types.ObjectId
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import javax.ws.rs.WebApplicationException
@@ -51,14 +52,30 @@ class CoffeeShopResourceSpecification extends Specification {
         println nearestShop
     }
 
+    def 'should return closest coffee shop to Portland Conference Center'() {
+        given:
+        def mongoClient = new MongoClient()
+        def coffeeShop = new CoffeeShopResource(mongoClient)
+
+        when:
+        double latitude = 45.5285859
+        double longitude = -122.6631354
+        def nearestShop = coffeeShop.getNearest(latitude, longitude)
+
+        then:
+        nearestShop.name == 'Tiny\'s Coffee'
+        println nearestShop
+    }
+
+    @Ignore('No limit on distance so will always return something if the DB has been populated.')
     def 'should throw an exception if no coffee shop found'() {
         given:
         def mongoClient = new MongoClient()
         def coffeeShop = new CoffeeShopResource(mongoClient)
 
         when:
-        double latitude = 37.3981841
-        double longitude = -5.9776375999999996
+        double latitude = 0
+        double longitude = 0
         def nearestShop = coffeeShop.getNearest(latitude, longitude)
 
         then:
@@ -95,7 +112,7 @@ class CoffeeShopResourceSpecification extends Specification {
     def 'should save all fields to the database when order is saved'() {
         given:
         def mongoClient = new MongoClient()
-        def database = mongoClient.getDB("coffee-app-database")
+        def database = mongoClient.getDB("TrishaCoffee")
         def collection = database.getCollection('Order')
         collection.drop();
 
@@ -123,15 +140,6 @@ class CoffeeShopResourceSpecification extends Specification {
         createdOrder['coffeeShopId'] == coffeeShopId
         createdOrder['_id'] != null
         createdOrder['prettyString'] == null
-        //    form = {
-        //        "selectedOptions": [],
-        //        "type": {
-        //            "name": "Cappuccino",
-        //            "family": "Coffee"
-        //        },
-        //        "size": "Small",
-        //        "drinker": "Trisha"
-        //    }
 
         cleanup:
         mongoClient.close()

@@ -6,30 +6,18 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
-<div class="container">
-    <div ng-controller="CoffeeShopController" class="SelectedCoffeeShop">
-        <div class="row" ng-hide="supportsGeo">
-            <p>Your browser doesn't let us get your location, sorry.</p>
-        </div>
-        <div class="row" ng-show="supportsGeo">
-            <div class="col-md-1">
-                <button ng-click="findCoffeeShopNearestToMe()" class="btn btn-default" class="center-block">
-                    Show my coffee shop
-                </button>
-            </div>
-        </div>
-        <div class="panel panel-default" ng-show="nearestCoffeeShop">
-            <div class="panel-body">
-                <p><strong>{{nearestCoffeeShop.name}}</strong>
-                    <a ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.name}}+near+{{nearestCoffeeShop.allValues.location.coordinates[1]}},{{nearestCoffeeShop.allValues.location.coordinates[0]}}">Map</a>
-                </p>
-            </div>
-        </div>
-
-        <!--<pre>coffee shop= {{nearestCoffeeShop}}</pre>-->
+<div ng-controller="CoffeeShopController" class="container">
+    <div class="form-group">
+        <input type="button" class="btn btn-default" value="Find my coffee shop" ng-click="findCoffeeShopNearestToMe()"/>
     </div>
-
+    <div class="panel panel-default" ng-show="nearestCoffeeShop">
+        <div class="panel-body">
+            <strong> {{nearestCoffeeShop.name}} </strong>
+            <a ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.name}}+near+{{nearestCoffeeShop.location.coordinates[1]}},{{nearestCoffeeShop.location.coordinates[0]}}">Map</a>
+        </div>
+    </div>
 </div>
+
 
 <div class="container">
 
