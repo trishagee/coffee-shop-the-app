@@ -7,13 +7,10 @@
 </head>
 <body>
 <div ng-controller="CoffeeShopController" class="container">
-    <div class="form-group">
-        <input type="button" class="btn btn-default" value="Find my coffee shop" ng-click="findCoffeeShopNearestToMe()"/>
-    </div>
     <div class="panel panel-default" ng-show="nearestCoffeeShop">
         <div class="panel-body">
-            <strong> {{nearestCoffeeShop.name}} </strong>
-            <a ng-href="https://www.google.co.uk/maps?q={{nearestCoffeeShop.name}}+near+{{nearestCoffeeShop.location.coordinates[1]}},{{nearestCoffeeShop.location.coordinates[0]}}">Map</a>
+            Your coffee will be ready for pick up at: <strong> {{nearestCoffeeShop.name}} </strong>
+<a ng-href="https://maps.google.com/maps/place/@{{nearestCoffeeShop.location.coordinates[1]}},{{nearestCoffeeShop.location.coordinates[0]}},19z">Map</a>
         </div>
     </div>
 </div>

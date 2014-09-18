@@ -12,18 +12,6 @@ coffeeApp.factory('CoffeeOrder', function ($resource) {
     );
 });
 
-coffeeApp.service('LocalCoffeeShop', function () {
-    var localCoffeeShop;
-    return {
-        setShop: function (shop) {
-            localCoffeeShop = shop;
-        },
-        getShop: function () {
-            return localCoffeeShop;
-        }
-    };
-});
-
 coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeShopLocator) {
     $scope.findCoffeeShopNearestToMe = function () {
         window.navigator.geolocation.getCurrentPosition(function (position) {
@@ -42,9 +30,10 @@ coffeeApp.controller('CoffeeShopController', function ($scope, $window, CoffeeSh
                 $scope.getCoffeeShopAt(51.4994678, -0.128888);
             });
     };
+    $scope.findCoffeeShopNearestToMe();
 });
 
-coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder, LocalCoffeeShop) {
+coffeeApp.controller('DrinksController', function ($scope, $filter, CoffeeOrder) {
     //this could come from the coffee shop itself
     $scope.types = [
         {name: 'Americano', family: 'Coffee'},
